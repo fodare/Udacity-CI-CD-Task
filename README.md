@@ -1,51 +1,139 @@
 # Overview
 
-<TODO: complete this with an overview of your project>
-
 ## Project Plan
 
-<TODO: Project Plan
-
-* A link to a Trello board for the project
-* A link to a spreadsheet that includes the original and final project plan>
+* A link to a Trello board for the project: [Trello board link](https://trello.com/invite/b/lahjb0u0/ATTI7b5a3b2eb353ea99def3bc28db5a18ecBBE3A434/udacity-task2-demoboard)
+* A link to a spreadsheet that includes the original and final project plan. See attachment in Trello `project plan` task.
 
 ## Instructions
 
-<TODO:  
+* Architectural Diagram (Shows how key parts of the system work)
 
-* Architectural Diagram (Shows how key parts of the system work)>
+![Alt sampleproject-ops-flow](./media/Sample-project-Ach.png)
 
-<TODO:  Instructions for running the Python project.  How could a user with no context run this project without asking you for any help.  Include screenshots with explicit steps to create that work. Be sure to at least include the following screenshots:
+## Local testing
 
-* Project running on Azure App Service
+* Log into Azure portal: [Azure portal](https://portal.azure.com/)
 
-* Project cloned into Azure Cloud Shell
+* Create new bash cloud shell. From the top right menu of the portal, click on the cloud shell button ![Alt shellbutton.png](./media/cloudshell%20button.png).
 
-* Passing tests that are displayed after running the `make all` command from the `Makefile`
+* Once in the bash cloud shell, you can clone the project starter files [here](https://github.com/udacity/nd082-Azure-Cloud-DevOps-Starter-Code/tree/master/C2-AgileDevelopmentwithAzure/project/starter_files)
+
+* From the bash terminal, run the commands below.
+
+  * ```python
+    cd ~./flask-sklearn
+
+    # Creates a python virtual enviroment.
+    python3 -m venv venv
+
+    # Activate the virtual enviroment.
+    source venv/bin/activate
+    ```
+
+* Run `Makefile`. Within the project file is a `Makefile` to help install, lint and test project source code. To run the commands within the file, execute the command below within your bash terminal. Command execution command should look something like below.
+
+  * ```python
+    make all
+    ```
 
 * Output of a test run
+![Alt shellbutton.png](./media/make-all-test.png).
 
-* Successful deploy of the project in Azure Pipelines.  [Note the official documentation should be referred to and double checked as you setup CI/CD](https://docs.microsoft.com/en-us/azure/devops/pipelines/ecosystems/python-webapp?view=azure-devops).
+* Successful deploy of the project in Azure Pipelines. Run the command below:
 
-* Running Azure App Service from Azure Pipelines automatic deployment
+  * ```python
+    # Create a test resource group
+    az group create -l westus -n test-rg
 
-* Successful prediction from deployed flask app in Azure Cloud Shell.  [Use this file as a template for the deployed prediction](https://github.com/udacity/nd082-Azure-Cloud-DevOps-Starter-Code/blob/master/C2-AgileDevelopmentwithAzure/project/starter_files/flask-sklearn/make_predict_azure_app.sh).
-The output should look similar to this:
+    # From the bash terminal. Ensure you are in the flask-sklearn dir
+    az webapp up -g test-rg -n {azure unique app service name}
+    ```
 
-```bash
-udacity@Azure:~$ ./make_predict_azure_app.sh
-Port: 443
-{"prediction":[20.35373177134412]}
-```
+* To support automatic CI-CD workflow. Create an azure pipeline, see template below.
 
-* Output of streamed log files from deployed application
+  * ```python
+    # Sample Azure CI-CD pipeline
+    trigger:
 
->
+    * main
 
-## Enhancements
+    pool:
 
-<TODO: A short description of how to improve the project in the future>
+    # vmImage: ubuntu-latest
 
-## Demo
+    name: Default
 
-<TODO: Add link Screencast on YouTube>
+    variables:
+
+    * name: "azureServiceConnectionId"
+        value: "Tem-Azure-connection"
+    * name: "webappName"
+        value: "testudacityapp."
+    * name: "environmentName"
+        value: "flask-ml-service"
+    * name: "projectRoot"
+        value: $(System.DefaultWorkingDirectory)/flask-sklearn
+
+    stages:
+
+    * stage: Build
+        jobs:
+    * job: Build
+            displayName: Build
+            steps:
+        * script: |
+                make setup
+                source venv/bin/activate
+                make install
+                make lint
+                displayName: Setup
+                workingDirectory: $(projectRoot)
+
+        * task: ArchiveFiles@2
+                displayName: "Archive project"
+                inputs:
+                rootFolderOrFile: $(projectRoot)
+                includeRootFolder: false
+                archiveType: 'zip'
+                archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+                replaceExistingArchive: true
+
+        * task: PublishBuildArtifacts@1
+                inputs:
+                PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+                ArtifactName: 'drop'
+                publishLocation: 'Container'
+
+    * stage: Deploy
+        displayName: "Deploy webApp"
+        dependsOn: Build
+        condition: succeeded()
+        jobs:
+    * job: Deploy
+            steps:
+        * task: DownloadBuildArtifacts@1
+                inputs:
+                buildType: 'current'
+                downloadType: 'single'
+                artifactName: 'drop'
+                downloadPath: '$(Build.ArtifactStagingDirectory)'
+        * task: AzureWebApp@1
+                inputs:
+                azureSubscription: 'Tem-Azure-connection'
+                appType: 'webAppLinux'
+                appName: 'testudacityapp'
+                package: '$(Build.ArtifactStagingDirectory)/drop/$(Build.BuildId).zip'
+    ```
+
+  * Ensure you create your service connection and update the field `azureSubscription` with your service connection name. See supporting documentation [here](https://learn.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints?view=azure-devops&tabs=yaml)
+
+* Call the prediction API. From the bash terminal, edit the placeholder value with the app service name in the `flask-sklearn/make_predict_azure_app.sh` file
+
+  * The output should loo like below:
+
+    ```bash
+    udacity@Azure:~$ ./make_predict_azure_app.sh
+    Port: 443
+    {"prediction":[20.35373177134412]}
+    ```
