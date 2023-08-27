@@ -1,0 +1,65 @@
+trigger:
+- main
+
+pool:
+  # vmImage: ubuntu-latest
+  name: Default
+
+variables:
+  - name: "azureServiceConnectionId"
+    value: "Tem-Azure-connection"
+  - name: "webappName"
+    value: "testudacityapp."
+  - name: "environmentName"
+    value: "flask-ml-service"
+  - name: "projectRoot"
+    value: $(System.DefaultWorkingDirectory)/flask-sklearn
+
+stages:
+  - stage: Build
+    jobs:
+      - job: Build
+        displayName: Build
+        steps:
+          - script: |
+              make setup
+              source venv/bin/activate
+              make install
+              make lint
+            displayName: Setup
+            workingDirectory: $(projectRoot)
+          
+          - task: ArchiveFiles@2
+            displayName: "Archive project"
+            inputs:
+              rootFolderOrFile: $(projectRoot)
+              includeRootFolder: false
+              archiveType: 'zip'
+              archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+              replaceExistingArchive: true
+              
+          - task: PublishBuildArtifacts@1
+            inputs:
+              PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+              ArtifactName: 'drop'
+              publishLocation: 'Container'
+
+  - stage: Deploy
+    displayName: "Deploy webApp"
+    dependsOn: Build
+    condition: succeeded()
+    jobs:
+      - job: Deploy
+        steps:
+          - task: DownloadBuildArtifacts@1
+            inputs:
+              buildType: 'current'
+              downloadType: 'single'
+              artifactName: 'drop'
+              downloadPath: '$(Build.ArtifactStagingDirectory)'
+          - task: AzureWebApp@1
+            inputs:
+              azureSubscription: 'Tem-Azure-connection'
+              appType: 'webAppLinux'
+              appName: 'testudacityapp'
+              package: '$(Build.ArtifactStagingDirectory)/drop/$(Build.BuildId).zip'
