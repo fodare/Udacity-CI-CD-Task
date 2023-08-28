@@ -1,5 +1,7 @@
 # Overview
 
+[![Python application test with Github Actions](https://github.com/fodare/Udacity-CI-CD-Task/actions/workflows/pythonapp.yml/badge.svg)](https://github.com/fodare/Udacity-CI-CD-Task/actions/workflows/pythonapp.yml)
+
 ## Project Plan
 
 * A link to a Trello board for the project: [Trello board link](https://trello.com/invite/b/lahjb0u0/ATTI7b5a3b2eb353ea99def3bc28db5a18ecBBE3A434/udacity-task2-demoboard)
