@@ -5,7 +5,7 @@
 ## Project Plan
 
 * A link to a Trello board for the project: [Trello board link](https://trello.com/invite/b/lahjb0u0/ATTI7b5a3b2eb353ea99def3bc28db5a18ecBBE3A434/udacity-task2-demoboard)
-* A link to a spreadsheet that includes the original and final project plan. See attachment in Trello `project plan` task.
+* A link to a spreadsheet that includes the original and final project plan. See attachment in Trello [project plan](https://trello.com/1/cards/64ebc8e797252a845d398dd0/attachments/64ebcb0fc0035f304185f64b/download/project-management-template.ods) task.
 
 ## Instructions
 
