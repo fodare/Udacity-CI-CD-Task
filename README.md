@@ -161,3 +161,9 @@
     Port: 443
     {"prediction":[20.35373177134412]}
     ```
+
+## Enhancements
+
+* Make a new endpoint / resource that returns predictions rather than using shell commands.
+
+* Perhaps split the frontend and the prediction service into microservices.
