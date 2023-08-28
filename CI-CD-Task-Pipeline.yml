@@ -9,7 +9,7 @@ variables:
   - name: "azureServiceConnectionId"
     value: "Tem-Azure-connection"
   - name: "webappName"
-    value: "testudacityapp."
+    value: "udacitytestmlappservice."
   - name: "environmentName"
     value: "flask-ml-service"
   - name: "projectRoot"
@@ -59,7 +59,7 @@ stages:
               downloadPath: '$(Build.ArtifactStagingDirectory)'
           - task: AzureWebApp@1
             inputs:
-              azureSubscription: 'Temp-Azure-Service-Princpal-Connection'
+              azureSubscription: 'Udacity temp azure connection'
               appType: 'webAppLinux'
-              appName: 'testudacityapp'
+              appName: 'udacitytestmlappservice'
               package: '$(Build.ArtifactStagingDirectory)/drop/$(Build.BuildId).zip'
