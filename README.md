@@ -40,9 +40,9 @@
     ```
 
 * Output of a test run
-![Alt shellbutton.png](./media/make-all-test.png).
+![Alt shellbutton.png](./media/make-all-test.png)
 
-* Successful deploy of the project in Azure Pipelines. Run the command below:
+* To successfully deploy the project using Azure Pipelines. Run the command below:
 
   * ```python
     # Create a test resource group
@@ -131,7 +131,26 @@
   * Ensure you create your service connection and update the field `azureSubscription` with your service connection name. See supporting documentation [here](https://learn.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints?view=azure-devops&tabs=yaml)
 
   A successful azure pipeline run should look something like below.
-  ![Alt shellbutton.png](./media/pipeline-run.png).
+  ![Alt shellbutton.png](./media/pipeline-run.png)
+  
+  You can also run a quick load test against the deployed app by running the `locustfile.py` script. To do this, simply follow the command below.
+  
+  * From you local machine CLI, run the commands
+
+    ```python
+    # Activate python virtual enviroment
+    source venv/bin/activate
+
+    # From the dir flask-sklearn
+    cd flask-sklearn
+
+    # Start locust and access the frontend app via your browser(http://localhost:8089/#)
+    locust
+    ```
+
+    * locust test should look like below.
+    ![Alt shellbutton.png](./media/locust-front-end.png)
+    ![Alt shellbutton.png](./media/locust-test.png)
 
 * Call the prediction API. From the bash terminal, edit the placeholder value with the app service name in the `flask-sklearn/make_predict_azure_app.sh` file
 
