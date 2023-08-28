@@ -130,6 +130,9 @@
 
   * Ensure you create your service connection and update the field `azureSubscription` with your service connection name. See supporting documentation [here](https://learn.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints?view=azure-devops&tabs=yaml)
 
+  A successful azure pipeline run should look something like below.
+  ![Alt shellbutton.png](./media/pipeline-run.png).
+
 * Call the prediction API. From the bash terminal, edit the placeholder value with the app service name in the `flask-sklearn/make_predict_azure_app.sh` file
 
   * The output should loo like below:
