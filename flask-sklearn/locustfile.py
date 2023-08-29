@@ -6,3 +6,8 @@ class HelloWorldUser(HttpUser):
     def hello_world(self):
         base_url = "https://testudacityapp.azurewebsites.net/"
         self.client.get(f"{base_url}")
+
+    @task
+    def hello_world(self):
+        base_url = "https://testudacityapp.azurewebsites.net/predict"
+        self.client.get(f"{base_url}")
