@@ -167,3 +167,7 @@
 * Make a new endpoint / resource that returns predictions rather than using shell commands.
 
 * Perhaps split the frontend and the prediction service into microservices.
+
+## Short demo
+
+View short demo [on YouTube](https://youtu.be/m-wLKvGcRBA)
