@@ -151,6 +151,7 @@
     * locust test should look like below.
     ![Alt shellbutton.png](./media/locust-front-end.png)
     ![Alt shellbutton.png](./media/locust-test.png)
+    ![Alt shellbutton.png](./media/loadtesting-prediction.png)
 
 * Call the prediction API. From the bash terminal, edit the placeholder value with the app service name in the `flask-sklearn/make_predict_azure_app.sh` file
 
